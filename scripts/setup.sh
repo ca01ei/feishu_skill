@@ -36,11 +36,6 @@ echo "Installing dependencies..."
 cd "$PROJECT_DIR"
 uv pip install -e ".[dev]" --python "$PROJECT_DIR/.venv/bin/python"
 
-# Install local SDK (install its deps first, then install without build isolation)
-echo "Installing SDK dependencies..."
-uv pip install requests requests_toolbelt pycryptodome websockets httpx setuptools --python "$PROJECT_DIR/.venv/bin/python"
-uv pip install -e "$PROJECT_DIR/oapi-sdk-python" --no-build-isolation --python "$PROJECT_DIR/.venv/bin/python"
-
 # Write marker
 date > "$MARKER"
 echo "=== Setup complete ==="
