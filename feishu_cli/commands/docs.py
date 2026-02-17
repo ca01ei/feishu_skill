@@ -4,6 +4,7 @@ import typer
 from lark_oapi.api.docs.v1 import GetContentRequest
 
 from feishu_cli.client import create_client
+from feishu_cli.runtime import call_api
 from feishu_cli.utils.output import format_response
 
 docs_app = typer.Typer(name="docs", help="Legacy document operations.", no_args_is_help=True)
@@ -26,6 +27,6 @@ def get_content(
         .content_type(content_type)
         .build()
     )
-    response = client.docs.v1.content.get(request)
+    response = call_api(client, client.docs.v1.content.get, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)

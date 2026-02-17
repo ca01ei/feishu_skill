@@ -7,6 +7,7 @@ import pytest
 from typer.testing import CliRunner
 
 from feishu_cli.commands.bitable import bitable_app
+from lark_oapi.api.bitable.v1 import ReqApp
 
 runner = CliRunner()
 
@@ -47,6 +48,19 @@ def test_app_create(mock_cc: MagicMock) -> None:
     mock_cc.return_value = mock_client
     result = runner.invoke(bitable_app, ["create", "--name", "Test"])
     assert result.exit_code == 0
+    request = mock_client.bitable.v1.app.create.call_args[0][0]
+    assert isinstance(request.request_body, ReqApp)
+    assert request.request_body.name == "Test"
+
+
+@patch("feishu_cli.commands.bitable.create_client")
+def test_app_update_requires_any_field(mock_cc: MagicMock) -> None:
+    mock_cc.return_value = MagicMock()
+    result = runner.invoke(bitable_app, ["update", "--app-token", "appXXX"])
+    assert result.exit_code == 2
+    parsed = json.loads(result.stdout)
+    assert parsed["success"] is False
+    assert parsed["code"] == 2
 
 
 @patch("feishu_cli.commands.bitable.create_client")
@@ -152,6 +166,20 @@ def test_record_delete(mock_cc: MagicMock) -> None:
     mock_cc.return_value = mock_client
     result = runner.invoke(bitable_app, ["record", "delete", "--app-token", "appXXX", "--table-id", "tblXXX", "--record-id", "recXXX"])
     assert result.exit_code == 0
+
+
+@patch("feishu_cli.commands.bitable.create_client")
+def test_record_create_invalid_json(mock_cc: MagicMock) -> None:
+    mock_cc.return_value = MagicMock()
+    result = runner.invoke(
+        bitable_app,
+        ["record", "create", "--app-token", "appXXX", "--table-id", "tblXXX", "--fields", "{"],
+    )
+    assert result.exit_code == 2
+    parsed = json.loads(result.stdout)
+    assert parsed["success"] is False
+    assert parsed["code"] == 2
+    assert "Invalid JSON" in parsed["msg"]
 
 
 # ── Field commands ──────────────────────────────────────────────────────────

@@ -11,5 +11,6 @@ def create_client() -> lark.Client:
         lark.Client.builder()
         .app_id(config.app_id)
         .app_secret(config.app_secret)
+        .enable_set_token(True)
         .build()
     )

@@ -29,6 +29,16 @@ def test_wiki_space_list(mock_create_client: MagicMock) -> None:
     parsed = json.loads(result.stdout)
     assert parsed["success"] is True
 
+@patch("feishu_cli.commands.wiki.create_client")
+def test_wiki_space_create_invalid_json(mock_create_client: MagicMock) -> None:
+    mock_create_client.return_value = MagicMock()
+    result = runner.invoke(wiki_app, ["space", "create", "--data", "{"])
+    assert result.exit_code == 2
+    parsed = json.loads(result.stdout)
+    assert parsed["success"] is False
+    assert parsed["code"] == 2
+    assert "Invalid JSON" in parsed["msg"]
+
 
 @patch("feishu_cli.commands.wiki.create_client")
 def test_wiki_space_list_failure(mock_create_client: MagicMock) -> None:

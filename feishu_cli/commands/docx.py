@@ -19,7 +19,8 @@ from lark_oapi.api.docx.v1 import (
 )
 
 from feishu_cli.client import create_client
-from feishu_cli.utils.output import format_response
+from feishu_cli.runtime import call_api
+from feishu_cli.utils.output import format_error, format_response
 
 docx_app = typer.Typer(name="docx", help="Docx document operations.", no_args_is_help=True)
 block_app = typer.Typer(name="block", help="Document block operations.", no_args_is_help=True)
@@ -28,10 +29,24 @@ docx_app.add_typer(block_app)
 
 def _load_json_data(data: str) -> dict:
     """Load JSON from a raw string or @file.json path."""
-    if data.startswith("@"):
-        file_path = Path(data[1:])
-        return json.loads(file_path.read_text(encoding="utf-8"))
-    return json.loads(data)
+    try:
+        if data.startswith("@"):
+            file_path = Path(data[1:])
+            return json.loads(file_path.read_text(encoding="utf-8"))
+        return json.loads(data)
+    except FileNotFoundError:
+        _json_param_error(f"JSON file not found: {data[1:]}")
+    except json.JSONDecodeError as exc:
+        _json_param_error(f"Invalid JSON: {exc}")
+    except OSError as exc:
+        _json_param_error(f"Failed to read JSON file: {exc}")
+    return {}
+
+
+def _json_param_error(message: str) -> None:
+    """Emit a structured parameter error and exit with code 2."""
+    typer.echo(format_error(code=2, msg=message))
+    raise typer.Exit(code=2)
 
 
 @docx_app.command("create")
@@ -49,7 +64,7 @@ def create_document(
         .request_body(body_builder.build())
         .build()
     )
-    response = client.docx.v1.document.create(request)
+    response = call_api(client, client.docx.v1.document.create, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -61,7 +76,7 @@ def get_document(
     """Get document metadata."""
     client = create_client()
     request = GetDocumentRequest.builder().document_id(token).build()
-    response = client.docx.v1.document.get(request)
+    response = call_api(client, client.docx.v1.document.get, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -77,7 +92,7 @@ def get_raw_content(
     if lang is not None:
         builder = builder.lang(lang)
     request = builder.build()
-    response = client.docx.v1.document.raw_content(request)
+    response = call_api(client, client.docx.v1.document.raw_content, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -96,7 +111,7 @@ def list_blocks(
     if page_token is not None:
         builder = builder.page_token(page_token)
     request = builder.build()
-    response = client.docx.v1.document_block.list(request)
+    response = call_api(client, client.docx.v1.document_block.list, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -114,7 +129,7 @@ def get_block(
         .block_id(block_id)
         .build()
     )
-    response = client.docx.v1.document_block.get(request)
+    response = call_api(client, client.docx.v1.document_block.get, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -136,7 +151,7 @@ def create_block_children(
         .request_body(body)
         .build()
     )
-    response = client.docx.v1.document_block_children.create(request)
+    response = call_api(client, client.docx.v1.document_block_children.create, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -163,6 +178,10 @@ def delete_block_children(
         .request_body(body)
         .build()
     )
-    response = client.docx.v1.document_block_children.batch_delete(request)
+    response = call_api(
+        client,
+        client.docx.v1.document_block_children.batch_delete,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
