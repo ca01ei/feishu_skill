@@ -1,0 +1,9 @@
+{
+  "name": "feishu-cloud-docs",
+  "version": "0.1.0",
+  "description": "Feishu cloud document operations skill — docx, sheets, bitable, wiki, and auth via local CLI",
+  "repository": "https://github.com/ca01ei/feishu_skill",
+  "license": "MIT",
+  "keywords": ["feishu", "lark", "docs", "sheets", "bitable", "wiki"],
+  "skills": "./skills/"
+}

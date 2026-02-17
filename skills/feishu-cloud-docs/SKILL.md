@@ -1,6 +1,8 @@
 ---
 name: feishu-cloud-docs
 description: Operate Feishu cloud documents using the local CLI. Use when users need create/get/update/delete/list workflows for docx, docs, sheets, bitable, wiki, and user-token authentication.
+allowed-tools: Read, Grep, Glob, Bash
+argument-hint: "[domain] [command] [options]"
 ---
 
 ## What this skill does
@@ -18,6 +20,14 @@ This skill provides operational guidance for the Feishu CLI in this repository:
 - Feishu app credentials
 
 ## Setup
+
+### Via Claude Code Marketplace (recommended)
+```
+/plugin marketplace add ca01ei/feishu_skill
+/plugin install feishu-cloud-docs@ca01ei/feishu_skill
+```
+
+### Manual
 Run once from repository root:
 ```bash
 bash scripts/setup.sh

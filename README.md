@@ -15,6 +15,22 @@ scripts/feishu-cli.sh <domain> <command> [options]
 ```
 
 ## 安装
+
+### 方式一：通过 Claude Code Marketplace 安装（推荐）
+
+在 Claude Code 中添加本仓库为 marketplace 源，然后安装插件：
+```
+/plugin marketplace add ca01ei/feishu_skill
+/plugin install feishu-cloud-docs@ca01ei/feishu_skill
+```
+
+安装范围可选：
+- `--scope user`：个人全局使用（默认）
+- `--scope project`：项目级别，团队共享
+- `--scope local`：仅本地项目
+
+### 方式二：手动克隆安装
+
 克隆仓库后，执行标准安装：
 ```bash
 bash scripts/setup.sh
