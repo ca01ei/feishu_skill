@@ -32,6 +32,7 @@ from lark_oapi.api.sheets.v3 import (
 )
 
 from feishu_cli.client import create_client
+from feishu_cli.runtime import call_api
 from feishu_cli.utils.output import format_response
 
 sheets_app = typer.Typer(name="sheets", help="Spreadsheet operations.", no_args_is_help=True)
@@ -68,7 +69,7 @@ def spreadsheet_create(
         .request_body(body_builder.build())
         .build()
     )
-    response = client.sheets.v3.spreadsheet.create(request)
+    response = call_api(client, client.sheets.v3.spreadsheet.create, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -84,7 +85,7 @@ def spreadsheet_get(
         .spreadsheet_token(token)
         .build()
     )
-    response = client.sheets.v3.spreadsheet.get(request)
+    response = call_api(client, client.sheets.v3.spreadsheet.get, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -105,7 +106,7 @@ def spreadsheet_update(
         .request_body(props_builder.build())
         .build()
     )
-    response = client.sheets.v3.spreadsheet.patch(request)
+    response = call_api(client, client.sheets.v3.spreadsheet.patch, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -124,7 +125,7 @@ def sheet_list(
         .spreadsheet_token(token)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet.query(request)
+    response = call_api(client, client.sheets.v3.spreadsheet_sheet.query, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -156,7 +157,11 @@ def filter_create(
         .request_body(body)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter.create(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter.create,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -174,7 +179,7 @@ def filter_get(
         .sheet_id(sheet_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter.get(request)
+    response = call_api(client, client.sheets.v3.spreadsheet_sheet_filter.get, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -195,7 +200,11 @@ def filter_update(
         .request_body(body)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter.update(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter.update,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -213,7 +222,11 @@ def filter_delete(
         .sheet_id(sheet_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter.delete(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter.delete,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -237,7 +250,11 @@ def filter_view_create(
         .request_body(body)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter_view.create(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter_view.create,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -257,7 +274,11 @@ def filter_view_get(
         .filter_view_id(filter_view_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter_view.get(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter_view.get,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -275,7 +296,11 @@ def filter_view_list(
         .sheet_id(sheet_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter_view.query(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter_view.query,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -298,7 +323,11 @@ def filter_view_update(
         .request_body(body)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter_view.patch(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter_view.patch,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -318,7 +347,11 @@ def filter_view_delete(
         .filter_view_id(filter_view_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_filter_view.delete(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_filter_view.delete,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -342,7 +375,11 @@ def float_image_create(
         .request_body(body)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_float_image.create(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_float_image.create,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -362,7 +399,11 @@ def float_image_get(
         .float_image_id(float_image_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_float_image.get(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_float_image.get,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -380,7 +421,11 @@ def float_image_list(
         .sheet_id(sheet_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_float_image.query(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_float_image.query,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -403,7 +448,11 @@ def float_image_update(
         .request_body(body)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_float_image.patch(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_float_image.patch,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -423,6 +472,10 @@ def float_image_delete(
         .float_image_id(float_image_id)
         .build()
     )
-    response = client.sheets.v3.spreadsheet_sheet_float_image.delete(request)
+    response = call_api(
+        client,
+        client.sheets.v3.spreadsheet_sheet_float_image.delete,
+        request,
+    )
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)

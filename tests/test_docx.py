@@ -171,6 +171,20 @@ def test_block_create_from_file(mock_create_client, tmp_path):
 
 
 @patch("feishu_cli.commands.docx.create_client")
+def test_block_create_invalid_json(mock_create_client):
+    mock_create_client.return_value = MagicMock()
+    result = runner.invoke(
+        docx_app,
+        ["block", "create", "--token", "doxcnABC", "--block-id", "blk123", "--data", "{"],
+    )
+    assert result.exit_code == 2
+    parsed = json.loads(result.stdout)
+    assert parsed["success"] is False
+    assert parsed["code"] == 2
+    assert "Invalid JSON" in parsed["msg"]
+
+
+@patch("feishu_cli.commands.docx.create_client")
 def test_block_delete(mock_create_client):
     mock_client = MagicMock()
     mock_resp = _mock_success_response()

@@ -1,6 +1,4 @@
 """Wiki commands for spaces, nodes, members, settings, and search."""
-
-import json
 from typing import Optional
 
 import lark_oapi as lark
@@ -24,7 +22,8 @@ from lark_oapi.api.wiki.v2 import (
 )
 
 from feishu_cli.client import create_client
-from feishu_cli.utils.output import format_response
+from feishu_cli.runtime import call_api
+from feishu_cli.utils.output import format_error, format_response
 
 wiki_app = typer.Typer(name="wiki", help="Wiki operations.", no_args_is_help=True)
 space_cmd = typer.Typer(name="space", help="Wiki space operations.", no_args_is_help=True)
@@ -36,6 +35,20 @@ wiki_app.add_typer(space_cmd, name="space")
 wiki_app.add_typer(node_cmd, name="node")
 wiki_app.add_typer(member_cmd, name="member")
 wiki_app.add_typer(setting_cmd, name="setting")
+
+def _json_param_error(message: str) -> None:
+    """Emit a structured parameter error and exit with code 2."""
+    typer.echo(format_error(code=2, msg=message))
+    raise typer.Exit(code=2)
+
+
+def _parse_json_body(data: str, schema: object) -> object:
+    """Parse request body JSON into SDK schema object."""
+    try:
+        return lark.JSON.unmarshal(data, schema)
+    except Exception as exc:
+        _json_param_error(f"Invalid JSON: {exc}")
+    return None
 
 
 # --- Space commands ---
@@ -53,7 +66,7 @@ def space_list(
         builder = builder.page_size(page_size)
     if page_token is not None:
         builder = builder.page_token(page_token)
-    response = client.wiki.v2.space.list(builder.build())
+    response = call_api(client, client.wiki.v2.space.list, builder.build())
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -64,9 +77,9 @@ def space_create(
 ) -> None:
     """Create a wiki space."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, lark.api.wiki.v2.Space)
+    body = _parse_json_body(data, lark.api.wiki.v2.Space)
     request = CreateSpaceRequest.builder().request_body(body).build()
-    response = client.wiki.v2.space.create(request)
+    response = call_api(client, client.wiki.v2.space.create, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -81,7 +94,7 @@ def space_get(
     builder = GetSpaceRequest.builder().space_id(space)
     if lang is not None:
         builder = builder.lang(lang)
-    response = client.wiki.v2.space.get(builder.build())
+    response = call_api(client, client.wiki.v2.space.get, builder.build())
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -96,7 +109,7 @@ def space_get_node(
     builder = GetNodeSpaceRequest.builder().token(token)
     if obj_type is not None:
         builder = builder.obj_type(obj_type)
-    response = client.wiki.v2.space.get_node(builder.build())
+    response = call_api(client, client.wiki.v2.space.get_node, builder.build())
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -111,9 +124,9 @@ def node_create(
 ) -> None:
     """Create a wiki node."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, lark.api.wiki.v2.Node)
+    body = _parse_json_body(data, lark.api.wiki.v2.Node)
     request = CreateSpaceNodeRequest.builder().space_id(space).request_body(body).build()
-    response = client.wiki.v2.space_node.create(request)
+    response = call_api(client, client.wiki.v2.space_node.create, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -134,7 +147,7 @@ def node_list(
         builder = builder.page_size(page_size)
     if page_token is not None:
         builder = builder.page_token(page_token)
-    response = client.wiki.v2.space_node.list(builder.build())
+    response = call_api(client, client.wiki.v2.space_node.list, builder.build())
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -147,7 +160,7 @@ def node_copy(
 ) -> None:
     """Copy a wiki node."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, CopySpaceNodeRequestBody)
+    body = _parse_json_body(data, CopySpaceNodeRequestBody)
     request = (
         CopySpaceNodeRequest.builder()
         .space_id(space)
@@ -155,7 +168,7 @@ def node_copy(
         .request_body(body)
         .build()
     )
-    response = client.wiki.v2.space_node.copy(request)
+    response = call_api(client, client.wiki.v2.space_node.copy, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -168,7 +181,7 @@ def node_move(
 ) -> None:
     """Move a wiki node."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, MoveSpaceNodeRequestBody)
+    body = _parse_json_body(data, MoveSpaceNodeRequestBody)
     request = (
         MoveSpaceNodeRequest.builder()
         .space_id(space)
@@ -176,7 +189,7 @@ def node_move(
         .request_body(body)
         .build()
     )
-    response = client.wiki.v2.space_node.move(request)
+    response = call_api(client, client.wiki.v2.space_node.move, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -191,9 +204,9 @@ def member_create(
 ) -> None:
     """Add a member to a wiki space."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, lark.api.wiki.v2.Member)
+    body = _parse_json_body(data, lark.api.wiki.v2.Member)
     request = CreateSpaceMemberRequest.builder().space_id(space).request_body(body).build()
-    response = client.wiki.v2.space_member.create(request)
+    response = call_api(client, client.wiki.v2.space_member.create, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -211,7 +224,7 @@ def member_list(
         builder = builder.page_size(page_size)
     if page_token is not None:
         builder = builder.page_token(page_token)
-    response = client.wiki.v2.space_member.list(builder.build())
+    response = call_api(client, client.wiki.v2.space_member.list, builder.build())
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -224,7 +237,7 @@ def member_delete(
 ) -> None:
     """Remove a member from a wiki space."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, lark.api.wiki.v2.Member)
+    body = _parse_json_body(data, lark.api.wiki.v2.Member)
     request = (
         DeleteSpaceMemberRequest.builder()
         .space_id(space)
@@ -232,7 +245,7 @@ def member_delete(
         .request_body(body)
         .build()
     )
-    response = client.wiki.v2.space_member.delete(request)
+    response = call_api(client, client.wiki.v2.space_member.delete, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -247,9 +260,9 @@ def setting_update(
 ) -> None:
     """Update wiki space settings."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, lark.api.wiki.v2.Setting)
+    body = _parse_json_body(data, lark.api.wiki.v2.Setting)
     request = UpdateSpaceSettingRequest.builder().space_id(space).request_body(body).build()
-    response = client.wiki.v2.space_setting.update(request)
+    response = call_api(client, client.wiki.v2.space_setting.update, request)
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
 
@@ -265,12 +278,12 @@ def search(
 ) -> None:
     """Search wiki nodes (v1 API)."""
     client = create_client()
-    body = lark.JSON.unmarshal(data, SearchNodeRequestBody)
+    body = _parse_json_body(data, SearchNodeRequestBody)
     builder = SearchNodeRequest.builder().request_body(body)
     if page_size is not None:
         builder = builder.page_size(page_size)
     if page_token is not None:
         builder = builder.page_token(page_token)
-    response = client.wiki.v1.node.search(builder.build())
+    response = call_api(client, client.wiki.v1.node.search, builder.build())
     typer.echo(format_response(response))
     raise typer.Exit(code=0 if response.success() else 1)
