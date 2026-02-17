@@ -9,7 +9,8 @@ import lark_oapi as lark
 def format_response(response: Any) -> str:
     """Format an API response as JSON string."""
     if response.success():
-        data = json.loads(lark.JSON.marshal(response.data)) if response.data else None
+        raw_data = getattr(response, "data", None)
+        data = json.loads(lark.JSON.marshal(raw_data)) if raw_data is not None else None
         return json.dumps({"success": True, "data": data}, ensure_ascii=False, indent=2)
     return format_error(
         code=response.code,

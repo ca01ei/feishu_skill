@@ -12,6 +12,14 @@ def test_format_response_success():
     assert parsed["success"] is True
     assert parsed["data"] is None
 
+def test_format_response_success_without_data_attr():
+    mock_resp = MagicMock(spec=["success"])
+    mock_resp.success.return_value = True
+    result = format_response(mock_resp)
+    parsed = json.loads(result)
+    assert parsed["success"] is True
+    assert parsed["data"] is None
+
 
 def test_format_response_failure():
     mock_resp = MagicMock()
