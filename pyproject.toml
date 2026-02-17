@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "CLI tool for Feishu cloud document operations"
 requires-python = ">=3.7"
 dependencies = [
-    "typer[all]>=0.9.0",
+    "typer>=0.9.0",
     "python-dotenv>=1.0.0",
 ]
 
@@ -13,6 +13,13 @@ feishu-cli = "feishu_cli.main:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-mock>=3.0.0",
+    "pytest-cov>=4.0.0",
+]
 
 [build-system]
 requires = ["hatchling"]
