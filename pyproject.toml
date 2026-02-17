@@ -1,0 +1,19 @@
+[project]
+name = "feishu-cli"
+version = "0.1.0"
+description = "CLI tool for Feishu cloud document operations"
+requires-python = ">=3.7"
+dependencies = [
+    "typer[all]>=0.9.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+feishu-cli = "feishu_cli.main:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

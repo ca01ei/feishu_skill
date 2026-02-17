@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.feishu_cli_installed
+dist/
+*.egg-info/
