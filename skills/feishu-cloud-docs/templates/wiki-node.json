@@ -1,0 +1,7 @@
+{
+  "_comment": "Wiki 节点创建模板。用法: wiki node create --space SPACE_ID --data @this_file.json。obj_type: docx/doc/sheet/bitable/mindnote。node_type: origin=创建新文档, shortcut=快捷方式。parent_node_token 为空字符串表示根目录。",
+  "obj_type": "docx",
+  "parent_node_token": "",
+  "node_type": "origin",
+  "title": "新建 Wiki 页面"
+}

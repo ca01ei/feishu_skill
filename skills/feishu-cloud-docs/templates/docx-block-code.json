@@ -1,0 +1,21 @@
+{
+  "_comment": "代码块模板。block_type=22。language 字段: 1=PlainText 4=C 5=C++ 10=Go 18=Shell 46=SQL 48=Java 49=Python 50=JavaScript 51=TypeScript 56=Rust",
+  "children": [
+    {
+      "block_type": 22,
+      "code": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "# 在这里填写代码内容\nprint('Hello World')"
+            }
+          }
+        ],
+        "style": {
+          "language": 49,
+          "wrap": false
+        }
+      }
+    }
+  ]
+}

@@ -5,3 +5,4 @@ __pycache__/
 .feishu_cli_installed
 dist/
 *.egg-info/
+oapi-sdk-python/

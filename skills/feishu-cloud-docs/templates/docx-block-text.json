@@ -1,0 +1,19 @@
+{
+  "_comment": "文本段落块模板。修改 content 字段的值后，通过 --data @this_file.json 传入。block_type=2 表示普通文本段落。",
+  "children": [
+    {
+      "block_type": 2,
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "在这里填写文本内容",
+              "text_element_style": {}
+            }
+          }
+        ],
+        "style": {}
+      }
+    }
+  ]
+}

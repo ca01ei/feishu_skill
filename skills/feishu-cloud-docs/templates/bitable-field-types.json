@@ -1,0 +1,29 @@
+{
+  "_comment": "字段类型枚举。创建字段时使用 type 的数字值，例: bitable field create --field-type 1。只读字段不能通过 API 写入。",
+  "field_types": {
+    "1": "text（单行文本）",
+    "2": "number（数字）",
+    "3": "single_select（单选）",
+    "4": "multi_select（多选）",
+    "5": "date（日期，值为毫秒时间戳）",
+    "7": "checkbox（复选框，值为 boolean）",
+    "11": "person（人员，值为 open_id 数组）",
+    "13": "phone（电话号码）",
+    "15": "url（超链接）",
+    "17": "attachment（附件）",
+    "18": "link（关联其他记录）",
+    "19": "lookup（lookup 字段）",
+    "20": "created_time（创建时间，只读）",
+    "21": "modified_time（最后修改时间，只读）",
+    "22": "created_time（创建时间别名，只读）",
+    "23": "modified_time（修改时间别名，只读）",
+    "24": "created_by（创建人，只读）",
+    "25": "modified_by（最后修改人，只读）",
+    "1001": "auto_number（自动编号，只读）",
+    "1002": "created_time（只读）",
+    "1003": "modified_time（只读）",
+    "1004": "created_by（只读）",
+    "1005": "modified_by（只读）"
+  },
+  "usage_example": "scripts/feishu-cli.sh bitable field create --app-token APP_TOKEN --table-id TABLE_ID --field-name '优先级' --field-type 3"
+}
